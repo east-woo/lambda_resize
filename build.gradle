@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.eastwoo'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.7.0'
+    implementation 'com.amazonaws:aws-java-sdk:1.11.969'
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+tasks.register('buildZip', Zip) {
+    from sourceSets.main.output  // 소스 코드 및 리소스 출력 포함
+    into('lib') {
+        from configurations.runtimeClasspath  // 런타임 클래스패스 포함
+    }
+    archiveFileName = 'application.zip'
+    destinationDirectory = file("$buildDir/distributions")
+}
